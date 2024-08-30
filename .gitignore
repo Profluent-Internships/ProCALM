@@ -1,7 +1,7 @@
 #addtl
-data/
+data/*
 # data/sharded_datasets/
-results/
+results/*
 #ignore all files in all subdirectories of results/checkpoints except for csv files
 
 #git add -f results/**/*.csv if things dont show up
