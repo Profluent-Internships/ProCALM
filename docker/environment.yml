@@ -1,0 +1,34 @@
+name: progen-conditional
+channels:
+  - conda-forge
+  - pytorch
+dependencies: 
+  - conda-forge::pip
+  - conda-forge::python=3.10.*
+  - conda-forge::setuptools
+  - conda-forge::rdkit
+  - pytorch>=2
+  - pytorch::pytorch-cuda
+  - conda-forge::pytorch-lightning
+  - pip:
+      # General python deps
+      - flask
+      - jupyter
+      - numpy
+      - pandas
+      - seaborn
+      - scipy
+      - tqdm
+      - pre-commit
+      - filelock
+      # Deep learning deps
+      - accelerate>=0.21.0
+      - tokenizers
+      - transformers>=4.36
+      - pynvml
+      - mosaicml[streaming] @ git+https://github.com/mosaicml/composer.git@dev
+      - mosaicml-streaming
+      # Bio-Chem-related deps
+      - biopython>=1.79
+      - drfp
+      
