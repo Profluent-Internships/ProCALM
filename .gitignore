@@ -1,9 +1,8 @@
 #addtl
 data/*
-# data/sharded_datasets/
 results/*
 #ignore all files in all subdirectories of results/checkpoints except for csv files
-
+#had trouble with this
 #git add -f results/**/*.csv if things dont show up
 
 # *.fasta
