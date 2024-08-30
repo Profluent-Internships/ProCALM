@@ -3,8 +3,6 @@ data/
 # data/sharded_datasets/
 # results/
 #ignore all files in all subdirectories of results/checkpoints except for csv files
-results/**/*
-!results/**/*.csv
 
 #git add -f results/**/*.csv if things dont show up
 
