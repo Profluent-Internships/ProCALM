@@ -1,0 +1,30 @@
+save_folder: results
+save_interval: 1000ba
+run_name: ec-onehot-uniref
+
+model:
+  pretrained_model: progen2-base
+  #below are all non-default parameters
+  adapter_projection_nlayers: 2 #use MLP for projection
+  adapter_nlayers: 4
+  adapter_c_s: 256
+data:
+  shuffle: True
+  prefetch_batch_size: 2000
+  eval_tokens_per_batch: 12000 
+  train_tokens_per_batch: 144000
+  eval_interval: 500ba
+  seed: 9176
+  ec_encoding: data/ec-uniref2level4_onehot.pt
+  
+  train_sources:
+  - local: data/sharded_datasets/all_uniref/train
+
+train:
+  seed: 42
+  max_duration: 9e9 #this should be in units of tokens (epochs won't work)
+  lr: 5e-4 
+  weight_decay: 5e-06
+  warmup_steps: 500 #batches
+  total_lr_decay_factor: 0.1
+  gradient_clipping_threshold: 0.8
