@@ -69,13 +69,7 @@ if __name__=='__main__':
     model = GPT2LMHeadModel.from_pretrained('AI4PD/ZymCTRL', cache_dir="data/pretrained_ZymCTRL").to(device)
     special_tokens = ['<start>', '<end>', '<|endoftext|>','<pad>',' ', '<sep>']
 
-    # load from txt file
-    with open('data/ECs_generation/train_common_ecs.txt', 'r') as f:
-        train_common_ecs = f.read().splitlines()
-    with open('data/ECs_generation/train_rare_ecs.txt', 'r') as f:
-        train_rare_ecs = f.read().splitlines()
-    
-    labels = train_common_ecs + train_rare_ecs
+    labels = ["4.2.1.20"]
 
     for label in tqdm(labels):
         # We'll run 45 batches per label. 20 sequences will be generated per batch seems to fit on 40GB A100.
