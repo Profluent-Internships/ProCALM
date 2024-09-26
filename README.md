@@ -32,24 +32,12 @@ python ZymCTRL_runner.py
 Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
 
 ## Analysis
-Here are example commands to reproduce our study and get statistics on the generation quality and diversity of generated sequences under `scripts`:
+Example command to get statistics on the generation quality and diversity of generated sequences under `scripts`:
 ```
 #ZymCTRL Baseline
-python run_generation_processing.py --model ZymCTRL --ec train+test
-
-#our model
-python run_generation_processing.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba21000 --ec train+test
-
-#taxonomy conditioning
-python run_generation_processing.py --model tax-swissprot_20240820-004651 --checkpoint ba63000 --tax superkingdoms
-
-#joint conditioning
-python run_generation_processing.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec common --tax superkingdoms
-
-#ECs with few bacteria
-python run_generation_processing.py --model ec+tax-swissprot-lowbacteria_20240824-202511 --checkpoint ba11000 --ec low_bacteria --tax superkingdoms
+python run_generation_processing.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
 ```
-Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per EC/tax.
+Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax).
 
 Perplexities for different splits can be calculated with `perplexity_calculation.py` under `scripts` and outputs will be saved under `results/{model_name}/perplexity_{checkpoint}.csv`. Perplexity calculation requires a single A100 and should take on the order of minutes to one hour for all datasets on a single checkpoint.
 
