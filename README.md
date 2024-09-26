@@ -1,6 +1,6 @@
 # ProCALM
 ![image](analysis/figures/architecture_top.png)
-ProCALM (Protein Conditionally Adapted Language Model) is a method where Progen2-base is finetuned with conditional adapters for conditional generation of functional enzymes, based on EC number, taxonomy, or both. Model here is refered to as progen-conditional. 
+ProCALM (**Pro**tein **C**onditionally **A**dapted **L**anguage **M**odel) is a method where Progen2-base is finetuned with conditional adapters for conditional generation of functional enzymes, based on EC number, taxonomy, or both. Model here is refered to as progen-conditional. 
 
 ## Setup and Installation
  We have provided `docker/Dockerfile` to build this image. Alternatively, model will run in a conda environment created using `docker/environment.yml`. All results can be downloaded from [here]() and unzipped to replace the `results/checkpoints` folder.
