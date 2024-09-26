@@ -61,7 +61,5 @@ Perplexities for different splits can be calculated with `perplexity_calculation
 The output csvs can be visualized using `analysis/visualization.ipynb`.
 
 ### Limitations
-Some of the results did not make it into the final figures (and their respective deprecated models have not been saved). For example, using separate projectors/encoders for every adapter layer does not seem to lead to improved performance. Bottlenecking the low rank projection of the LM hidden embedding also leads to negligible improvements to conditional generation performance. Better logging for losses as trianing progresses could be implemented.
-
-Future work could include using the uniref dataset for all model finetuning and also more detailed analysis of the generated sequences using CLEAN or ESMFold.
+Better logging for losses as training progresses could be implemented, potentially through MLflow. Future work could include using the uniref dataset for all model finetuning and also more detailed analysis of the generated sequences using CLEAN or ESMFold.
 
