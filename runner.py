@@ -14,13 +14,9 @@ from tqdm import tqdm
 from transformers import GenerationConfig
 from progen_conditional.model import ProgenConditional
 from progen_conditional.data import get_tokenizer, PAD_TOKEN_ID
+from utils import taxname2number
 
 CKPT_DIR = "results/"
-
-taxname2number = {'bacteria': '2.1224.1236.2887326.468.469.470',
-        'archaea': '2157.2283796.183967.2301.46630.46631.46632',
-        'eukaryota': '2759.4890.147550.5125.5129.5543.51453',
-        'viruses': '10239.2731618.2731619.-1.2946170.10663.-1'}
 
 class Runner():
     """

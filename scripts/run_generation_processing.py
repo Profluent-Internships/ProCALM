@@ -1,8 +1,9 @@
-from bioinformatics import *
 import numpy as np
 from tqdm import tqdm
 import argparse
 import torch
+from utils import taxname2number
+from bioinformatics import *
 
 def clean(sample):
     """
@@ -266,60 +267,21 @@ if __name__ == '__main__':
     train_df['superkingdom'] = train_df['Tax number'].apply(lambda x: x.split('.')[0]) 
     train_dist['tax'] = dict(train_df['superkingdom'].value_counts().sort_index()/len(train_df))
 
-    #load as a list from a txt file
-    with open('data/ECs_generation/train_common_ecs.txt', 'r') as f:
-        train_common_ecs = f.read().splitlines()
-    with open('data/ECs_generation/train_rare_ecs.txt', 'r') as f:
-        train_rare_ecs = f.read().splitlines()
-    with open('data/ECs_generation/test_ecs.txt', 'r') as f:
-        test_ecs = f.read().splitlines()
-    with open('data/ECs_generation/low_bacteria_common_ecs.txt', 'r') as f:
-        low_bacteria_ecs = f.read().splitlines()
-
     models = [args.model]
     checkpoints = [args.checkpoint] 
     temps = ["temp0.3"]
-
-    if args.ec == 'train+test':
-        ecs = train_common_ecs + train_rare_ecs + test_ecs
-    elif args.ec == 'rare':
-        ecs = train_rare_ecs    
-    elif args.ec == 'common':
-        ecs = train_common_ecs  
-    elif args.ec == "low_bacteria":
-        ecs = low_bacteria_ecs 
-    elif args.ec == None:
+ 
+    if args.ec == None:
         ecs = ["no-ec"]
     else:
         ecs = [args.ec]
     
-    if args.tax == 'superkingdoms':
-        taxes = ['2.1224.1236.2887326.468.469.470', '2157.2283796.183967.2301.46630.46631.46632', '2759.4890.147550.5125.5129.5543.51453', '10239.2731618.2731619.-1.2946170.10663.-1']
-    elif args.tax == None:
+    if args.tax == None:
         taxes = ['no-tax']
     else:
-        taxes = [args.tax]
-
-    #check to make sure all files exist before proceedding
-    flag = False
-    for model in models:
-        for checkpoint in checkpoints:
-            for temp in temps:
-                if model == 'ZymCTRL':
-                    ecs = train_common_ecs + train_rare_ecs
-
-                for ec in ecs:
-                    for tax in taxes:
-                        if model == 'ZymCTRL':
-                            file = 'results/{}/generated/sequences_pretrained_{}.fasta'.format(model, ec)
-                            temp = 'temp1'
-                        else:
-                            file = 'results/{}/generated/{}/{}/sequences_{}_{}.fasta'.format(model, checkpoint, temp, ec, tax)
-                        if not os.path.exists(file):
-                            print(file + " does not exist")
-                            flag = True
-    if flag:
-        exit()
+        assert args.tax in taxname2number.keys(), "Taxonomy must be one of bacteria, archaea, eukaryota, or viruses"
+        tax = taxname2number[args.tax] if tax is not None else None
+        taxes = [tax]
 
     pbar = tqdm(total=len(models) * len(checkpoints) * len(temps) * len(ecs) * len(taxes), desc='Processing')
 

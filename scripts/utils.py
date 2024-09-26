@@ -7,6 +7,11 @@ import seaborn as sns
 
 ### Useful functions for plotting and processing data and results###
 
+taxname2number = {'bacteria': '2.1224.1236.2887326.468.469.470',
+        'archaea': '2157.2283796.183967.2301.46630.46631.46632',
+        'eukaryota': '2759.4890.147550.5125.5129.5543.51453',
+        'viruses': '10239.2731618.2731619.-1.2946170.10663.-1'}
+        
 def make_hierarchical_onehot(levels, maxes):
     """
     levels: list of levels to encode
