@@ -44,6 +44,6 @@ Perplexities for different splits can be calculated with `perplexity_calculation
 
 The output csvs can be visualized using `analysis/visualization.ipynb`.
 
-### Limitations
+## Limitations
 Better logging for losses as training progresses could be implemented, potentially through MLflow.
 
