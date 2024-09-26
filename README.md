@@ -18,23 +18,18 @@ Results will be saved under `results/`. Training should take on the order of 6 h
 
 ## Generation
 Example commands:
+
 ```
 #generate for a single EC conditioning
 python runner.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba21000 --ec 4.2.1.20
 
-#generate for EC conditionings tested in our study
-python runner.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba21000 --ec train+test --num_seqs 225
-
 #generate for EC and taxonomy conditioning
-python runner.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec common --tax 2.1224.1236.2887326.468.469.470 --num_seqs 225
+python runner.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria --num_seqs 225
 
-#generate for ECs with few bacteria
-python runner.py --model ec+tax-swissprot-lowbacteria_20240824-202511 --checkpoint ba11000 --ec low_bacteria --tax superkingdoms
-
-#ZymCTRL baseline for rare and common ECs
+#ZymCTRL baseline for EC 4.2.1.20
 python ZymCTRL_runner.py
 ```
-Alternatively, if 4 GPUs are available, you can run many generations in parallel with `scripts/parallel_generation/run_parallel_generation.sh`. Outputs will be saved under `results/{model_name}/generated/{checkpoint}`. Note that parallelization should allow the generation to finish in under 2 hours if you generating with 225 sequences per EC and 72 unique ECs. Note that some of the generation may come out slightly differently, as there is an update with seeding added at a different point in the runner.
+Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
 
 ## Analysis
 Here are example commands to reproduce our study and get statistics on the generation quality and diversity of generated sequences under `scripts`:
