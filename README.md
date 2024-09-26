@@ -1,5 +1,5 @@
 # ProCALM
-ProCALM (Protein Conditionally Adapted Language Model) is a method where Progen2-base is finetuned with conditional adapters for conditional generation of functional enzymes, based on EC number, taxonomy, or both. Model here is refered to as progen-conditional. This is the version of the repo cleared for external use.
+ProCALM (Protein Conditionally Adapted Language Model) is a method where Progen2-base is finetuned with conditional adapters for conditional generation of functional enzymes, based on EC number, taxonomy, or both. Model here is refered to as progen-conditional. 
 
 ## Setup and Installation
  We have provided `docker/Dockerfile` to build this image. Alternatively, model will run in a conda environment created using `docker/environment.yml`. All results can be downloaded from [here]() and unzipped to replace the `results/checkpoints` folder.
@@ -61,7 +61,7 @@ Perplexities for different splits can be calculated with `perplexity_calculation
 The output csvs can be visualized using `analysis/visualization.ipynb`.
 
 ### Limitations
-Some of the results did not make it into the final figures (and their respective deprecated models have not been saved). For example, using separate projectors/encoders for every adapter layer does not seem to lead to improved performance. Bottlenecking the low rank projection of the LM hidden embedding also leads to negligible improvements to conditional generation performance.
+Some of the results did not make it into the final figures (and their respective deprecated models have not been saved). For example, using separate projectors/encoders for every adapter layer does not seem to lead to improved performance. Bottlenecking the low rank projection of the LM hidden embedding also leads to negligible improvements to conditional generation performance. Better logging for losses as trianing progresses could be implemented.
 
 Future work could include using the uniref dataset for all model finetuning and also more detailed analysis of the generated sequences using CLEAN or ESMFold.
 
