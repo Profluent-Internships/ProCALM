@@ -15,10 +15,10 @@ Example command for running on 4 40GB A100s:
 ```
 composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 ```
-Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens.
+Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
-Example commands:
+Example commands to generate sequences with different conditioning using the pretrained moels:
 
 ```
 #generate for a single EC conditioning
@@ -28,15 +28,14 @@ python runner.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba2100
 python runner.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria --num_seqs 225
 
 #ZymCTRL baseline for EC 4.2.1.20
-python ZymCTRL_runner.py
+python scripts/ZymCTRL_runner.py
 ```
-Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
+Generated sequences will be saved under `results/{model_name}/generated/` as fastas. Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
 
 ## Analysis
-Example command to get statistics on the generation quality and diversity of generated sequences under `scripts`:
+Example command to get statistics on the generation quality and diversity of generated sequences:
 ```
-#ZymCTRL Baseline
-python run_generation_processing.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
+python scripts/run_generation_processing.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
 ```
 Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax).
 
