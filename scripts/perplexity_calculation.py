@@ -17,18 +17,25 @@ import json
 device = 'cuda'
 os.chdir('../')
 
-
-for model_name, checkpoint in zip(['ec-onehot-swissprot_20240819-231400'],['ba21000']): 
+for model_name, checkpoint in zip(['ec-onehot-swissprot'],['ba21000']): 
 
     ckpt_file = f'results/{model_name}/huggingface/{checkpoint}'
-    model = ProgenConditional.from_pretrained(ckpt_file)
+
+    if os.path.exists(os.path.join(ckpt_file, "model.safetensors")):
+        #if there is a local safetensors file to load
+        model = ProgenConditional.from_pretrained(ckpt_file)
+        tokenizer = get_tokenizer()
+    else:
+        #download the model from the huggingface model hub and cache it locally
+        model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
+        tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM")
+
     model.to(device)
     model.eval()
 
-
     train_data_kwargs = dict(
         rng=np.random.default_rng(9176),
-        tokenizer=get_tokenizer(),
+        tokenizer=tokenizer,
         prefetch_factor= 1,  # Pre-fetches based on batch_size, not device_batch_tokens
         num_workers=4
     )

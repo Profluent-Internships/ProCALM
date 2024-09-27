@@ -33,12 +33,21 @@ class Runner():
         #load a model with conditional adapters
         self.model_dir = os.path.join(CKPT_DIR, model_name)
         ckpt_file = os.path.join(self.model_dir, 'huggingface', checkpoint_name)
-        self.model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
+        
+        if os.path.exists(os.path.join(ckpt_file, "model.safetensors")):
+            #if there is a local safetensors file to load
+            self.model = ProgenConditional.from_pretrained(ckpt_file)
+            self.tokenizer = get_tokenizer()
+        else:
+            #download the model from the huggingface model hub and cache it locally
+            self.model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
+            self.tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM")
+            
         self.progenconditional_config = self.model.config
         self.model.to(device)
         self.model.eval()
 
-        self.tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM") #get_tokenizer()
+        
         self.pad_token_id = PAD_TOKEN_ID
 
         #load the dictionary mapping EC to encoding
@@ -70,8 +79,6 @@ class Runner():
         #check if the conditions are in the encoding dicts used to train the model. If not, do unconditional generation for that condition.
         self.ec = "no-ec" if "ec" not in self.encoding_dicts.keys() else conditions.get('ec', "no-ec")
         self.tax = "no-tax" if "tax" not in self.encoding_dicts.keys() else conditions.get('tax', "no-tax")
-        
-        print(f"Generating sequences for EC {self.ec} and tax {self.tax}")
 
         condition_encodings = {}
         for key, encoding_dict in self.encoding_dicts.items():
@@ -131,18 +138,24 @@ def main():
     tax = args.tax
     all_sequences = []
     conditions = {}
-    conditions['ec'] = ec if ec is not None else None
+    if ec is not None:
+        conditions['ec'] = ec
     
     # if tax is not None:
     #     assert tax in taxname2number.keys()  "Taxonomy must be one of bacteria, archaea, eukaryota, or viruses"
     tax = taxname2number[tax] if tax is not None else None
-    conditions['tax'] = tax if tax is not None else None
+    if tax is not None:
+        conditions['tax'] = tax
     
+    tqdm_length = args.num_seqs // args.batch_size
+    tqdm_iterator = tqdm(range(tqdm_length), desc=f"Generating sequences for EC {ec} and tax {tax}")
+
     for batch in range(args.num_seqs // args.batch_size): #45 is the max batch size that fits on 40GB A100
         
         sequences = runner.sample(conditions=conditions, temperature=args.temp, num_return_sequences=args.batch_size, top_p=args.top_p)
         all_sequences.extend(sequences)
         runner.save_seqs(all_sequences)
+        tqdm_iterator.update(1)
 
 if __name__ == "__main__":
     main()
