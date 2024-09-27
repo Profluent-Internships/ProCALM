@@ -12,9 +12,10 @@ import torch
 from tqdm import tqdm
 
 from transformers import GenerationConfig
+from tokenizers import Tokenizer
 from progen_conditional.model import ProgenConditional
 from progen_conditional.data import get_tokenizer, PAD_TOKEN_ID
-from utils import taxname2number
+from scripts.utils import taxname2number
 
 CKPT_DIR = "results/"
 
@@ -32,15 +33,12 @@ class Runner():
         #load a model with conditional adapters
         self.model_dir = os.path.join(CKPT_DIR, model_name)
         ckpt_file = os.path.join(self.model_dir, 'huggingface', checkpoint_name)
-
-        #load the huggingface model if it exists
-        self.generation_config = GenerationConfig.from_pretrained(ckpt_file)
-        self.model = ProgenConditional.from_pretrained(ckpt_file)
+        self.model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
         self.progenconditional_config = self.model.config
         self.model.to(device)
         self.model.eval()
 
-        self.tokenizer = get_tokenizer()
+        self.tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM") #get_tokenizer()
         self.pad_token_id = PAD_TOKEN_ID
 
         #load the dictionary mapping EC to encoding
@@ -129,15 +127,17 @@ def main():
     #reintialize here so the seed is set correctly
     runner = Runner(model_name=args.model, checkpoint_name=args.checkpoint)
 
+    ec = args.ec
+    tax = args.tax
     all_sequences = []
-
     conditions = {}
     conditions['ec'] = ec if ec is not None else None
-    assert tax in taxname2number.keys(), "Taxonomy must be one of bacteria, archaea, eukaryota, or viruses"
+    
+    # if tax is not None:
+    #     assert tax in taxname2number.keys()  "Taxonomy must be one of bacteria, archaea, eukaryota, or viruses"
     tax = taxname2number[tax] if tax is not None else None
     conditions['tax'] = tax if tax is not None else None
     
-
     for batch in range(args.num_seqs // args.batch_size): #45 is the max batch size that fits on 40GB A100
         
         sequences = runner.sample(conditions=conditions, temperature=args.temp, num_return_sequences=args.batch_size, top_p=args.top_p)
