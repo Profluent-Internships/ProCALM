@@ -24,10 +24,10 @@ Example commands to generate sequences with different conditioning using the pre
 
 ```
 #generate for a single EC conditioning
-python runner.py --model ec-onehot-swissprot --checkpoint ba11000 --ec 4.2.1.20
+python runner.py --model ec-onehot-swissprot --checkpoint 1.5B --ec 4.2.1.20
 
 #generate for EC and taxonomy conditioning
-python runner.py --model ec+tax-swissprot --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria --num_seqs 225
+python runner.py --model ec+tax-swissprot --checkpoint 9B --ec 4.2.1.20 --tax bacteria --num_seqs 225
 
 #ZymCTRL baseline for EC 4.2.1.20
 python scripts/ZymCTRL_runner.py
@@ -37,7 +37,7 @@ Generated sequences will be saved under `results/{model_name}/generated/` as fas
 ## Analysis
 Example command to get statistics on the generation quality and diversity of generated sequences:
 ```
-python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
+python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint 9B --ec 4.2.1.20 --tax bacteria
 ```
 Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax).
 
