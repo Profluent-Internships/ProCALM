@@ -5,6 +5,11 @@ ProCALM (**Pro**tein **C**onditionally **A**dapted **L**anguage **M**odel) is a 
 ## Setup and Installation
  We have provided `docker/Dockerfile` to build this image. Alternatively, model will run in a conda environment created using `docker/environment.yml`. All results can be downloaded from [here]() and unzipped to replace the `results/checkpoints` folder.
 
+If you are skipping Training and only performing Generation by loading pretrained models, first download the ProGen2-base model to `data/pretrained_models` by running:
+```
+python progen_conditional/defaults.py
+```
+
 ## Dataset Processing
 
 For convenience, processed datasets used for model training and evaluation (excluding the Uniref dataset) are preloaded in this repo.
@@ -21,7 +26,7 @@ composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
-Example commands to generate sequences with different conditioning using the pretrained moels:
+Example commands to generate sequences with different conditioning using the pretrained models (loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM)):
 
 ```
 #generate for a single EC conditioning
