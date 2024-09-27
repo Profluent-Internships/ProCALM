@@ -24,10 +24,10 @@ Example commands to generate sequences with different conditioning using the pre
 
 ```
 #generate for a single EC conditioning
-python runner.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba21000 --ec 4.2.1.20
+python runner.py --model ec-onehot-swissprot --checkpoint ba11000 --ec 4.2.1.20
 
 #generate for EC and taxonomy conditioning
-python runner.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria --num_seqs 225
+python runner.py --model ec+tax-swissprot --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria --num_seqs 225
 
 #ZymCTRL baseline for EC 4.2.1.20
 python scripts/ZymCTRL_runner.py
