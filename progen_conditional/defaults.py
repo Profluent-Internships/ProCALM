@@ -9,34 +9,16 @@ import torch
 
 logger = logging.getLogger(__name__)
 
-def get_parameters(param_dir, model_name='progen2-base'):
-    url = "https://storage.googleapis.com/sfr-progen-research/checkpoints/{}.tar.gz"
-
-    model_dir = os.path.join(param_dir, model_name)
-    model_url = url.format(model_name)
-    
-    if os.path.exists(model_dir + ".success"):
-        print(f"Skipping {model_name} because it already exists.")
-    else:
-        print(f"Downloading {model_name} from {model_url} to {model_dir}")
-        os.makedirs(model_dir, exist_ok=True)
-        urllib.request.urlretrieve(model_url, model_dir + ".tar.gz")  # nosec
-        with tarfile.open(model_dir + ".tar.gz") as f:
-            f.extractall(model_dir)  # nosec
-        Path(model_dir + ".success").touch()
-    
-    return model_dir
 
 def get_config(model_config, data_config) -> dict:
     condition2encoding = {}
 
-    pretrained_model_dir = get_parameters('data/pretrained_models', model_name=model_config["pretrained_model"])
     kwargs = json.load(open(os.path.join(pretrained_model_dir, 'config.json')))
     kwargs["gradient_checkpointing"] = model_config.get("gradient_checkpointing", True)
 
     kwargs["full_finetuning"] = model_config.get("full_finetuning", False)
     kwargs["pretrained_model_name"] = model_config["pretrained_model"]
-    kwargs["pretrained_model_dir"] = pretrained_model_dir
+    kwargs["pretrained_model_dir"] = os.path.join('data/pretrained_models', model_config["pretrained_model"])
     kwargs["adapter_weight_init"] = model_config.get("adapter_weight_init", 1e-5)
     kwargs["adapter_nlayers"] = model_config.get("adapter_nlayers", 2)
     kwargs["adapter_dropout"] = model_config.get("adapter_dropout", 0.1)
@@ -68,3 +50,9 @@ def get_config(model_config, data_config) -> dict:
             print(f"Skipping {condition_name} conditioning.")
     
     return kwargs, condition2encoding
+
+def main():
+    get_parameters('data/pretrained_models', model_name="progen2-base")
+
+if __name__ == "__main__":
+    main()
