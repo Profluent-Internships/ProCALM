@@ -1,5 +1,5 @@
 #addtl
-data/*
+data/pretrained_models/*
 results/*
 #ignore all files in all subdirectories of results/checkpoints except for csv files
 #had trouble with this
