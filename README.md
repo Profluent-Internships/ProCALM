@@ -37,7 +37,7 @@ Generated sequences will be saved under `results/{model_name}/generated/` as fas
 ## Analysis
 Example command to get statistics on the generation quality and diversity of generated sequences:
 ```
-python scripts/run_generation_processing.py --model ec+tax-swissprot_20240819-231401 --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
+python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint ba21000 --ec 4.2.1.20 --tax bacteria
 ```
 Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax).
 
