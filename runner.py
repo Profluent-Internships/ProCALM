@@ -24,7 +24,7 @@ class Runner():
     Class for running generation on trained checkpoints with conditional adapters.
     """
 
-    def __init__(self, model_name, checkpoint_name="ba11000", device="cuda") -> None:
+    def __init__(self, model_name, checkpoint_name="1.5B", device="cuda") -> None:
         #load the training config to determine how to load the trained model
         self.model_name = model_name
         self.checkpoint_name = checkpoint_name
@@ -42,7 +42,7 @@ class Runner():
             #download the model from the huggingface model hub and cache it locally
             self.model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
             self.tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM")
-            
+
         self.progenconditional_config = self.model.config
         self.model.to(device)
         self.model.eval()

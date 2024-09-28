@@ -1,6 +1,14 @@
 #addtl
 data/pretrained_models/*
-results/*
+data/raw_data/*
+results/**
+#!results/**/*.csv
+
+# results/*.pt
+# results/**/*.safetensors
+# results/**/*.json
+# results/**/*.txt
+
 #ignore all files in all subdirectories of results/checkpoints except for csv files
 #had trouble with this
 #git add -f results/**/*.csv if things dont show up
