@@ -13,14 +13,14 @@ Alternatively, you can follow these steps to reproduce our dataset processing. T
 The final splits used in our study are built and saved to sharded datasets using `build_splits.ipynb` under `scripts`. `save_sharded.ipynb` is a shortcut to save sharded datasets from presaved csv files of each split (in particular the sharded version of uniref). You can also use `select_ECs.ipynb` to reproduce how we generated the EC numbers that are used for generation and analysis. 
 
 ## Training
-Example command for running on 4 40GB A100s:
+Example command for running training on 4 40GB A100s:
 ```
 composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 ```
 Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
-Example commands to generate sequences with different conditioning using the pretrained models (loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM)):
+Example commands to generate sequences with different conditioning. Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation:
 
 ```
 #generate for a single EC conditioning
@@ -35,7 +35,7 @@ python scripts/ZymCTRL_runner.py
 Generated sequences will be saved under `results/{model_name}/generated/` as fastas. Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
 
 ## Analysis
-Example command to get statistics on the generation quality and diversity of generated sequences:
+CSV files summarizing the quality of generated sequences are preloaded to this repository. Alternatively, example command to get statistics on the generation quality and diversity of generated sequences:
 ```
 python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint 9B --ec 4.2.1.20 --tax bacteria
 ```
