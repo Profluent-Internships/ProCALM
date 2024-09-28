@@ -20,7 +20,7 @@ composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
-Generated sequences for some of the pretrained models are preloaded to this respository. Example commands to generate sequences with different conditioning. Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation:
+Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation, with corresponding generated sequences preloaded to this respository. Alternatively, example commands to generate sequences with different conditioning:
 
 ```
 #generate for a single EC conditioning
