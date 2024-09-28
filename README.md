@@ -6,7 +6,7 @@ ProCALM (**Pro**tein **C**onditionally **A**dapted **L**anguage **M**odel) is an
  We have provided `docker/Dockerfile` to build this image. Alternatively, model will run in a conda environment created using `docker/environment.yml`. All results can be downloaded from [here]() and unzipped to replace the `results/checkpoints` folder.
 
 ## Dataset Processing
-For convenience, processed datasets used for model training and evaluation (excluding the Uniref dataset) are preloaded in this repo.
+For convenience, processed datasets used for model training and evaluation (excluding the Uniref dataset) are preloaded in this repository.
 
 Alternatively, you can follow these steps to reproduce our dataset processing. The raw data used for training ProCALM is obtained from [Uniprot](https://www.uniprot.org) and other useful files are from the [CARE benchmarks](https://github.com/jsunn-y/CARE/). You will need all enzymes with EC numbers and taxonomy lineages from uniprot for Uniref (>20M) and Swissprot (~200k). Use the versions from June 17, 2024 and export EC number, sequence, entry ID, taxonomy, taxonomy ID, lineage, lineage ID as a tsv. Raw data is alternatively uploaded [here]() and can fill in the `data/raw_data` folder. The `database_setup.py` script will run sequence clustering on Swissprot (requires MMseqs2) and will build Diamond reference databases along with MMseqs2 databases including taxonomy (requires Diamon BLAST). For building the Diamond reference database, you will also need swissprot.fasta file (~550k sequences from June 17, 2024 download). The latter two reference databases are only needed for analysis of generated sequences.
 
@@ -20,7 +20,7 @@ composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
-Example commands to generate sequences with different conditioning. Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation:
+Generated sequences for some of the pretrained models are preloaded to this respository. Example commands to generate sequences with different conditioning. Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation:
 
 ```
 #generate for a single EC conditioning
