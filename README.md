@@ -35,7 +35,7 @@ python scripts/ZymCTRL_runner.py
 Generated sequences will be saved under `results/{model_name}/generated/` as fastas. Generation on a single GPU should take on the order of 1 minute per batch, so 990 sequences will take around 20 minutes on a single 40GB A100.
 
 ## Analysis
-CSV files summarizing the quality of generated sequences are preloaded to this repository. Alternatively, example command to get statistics on the generation quality and diversity of generated sequences:
+CSV files summarizing the quality of generated sequences are preloaded to this repository. Note that ba1100, ba21000, ba42000, and ba63000 refer to checkpoints trained to 1.5, 3, 6, and 9 billion tokens, respectively. Alternatively, example command to get statistics on the generation quality and diversity of generated sequences:
 ```
 python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint 9B --ec 4.2.1.20 --tax bacteria
 ```
