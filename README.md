@@ -13,11 +13,11 @@ Alternatively, you can follow these steps to reproduce our dataset processing. T
 The final splits used in our study are built and saved to sharded datasets using `build_splits.ipynb` under `scripts`. `save_sharded.ipynb` is a shortcut to save sharded datasets from presaved csv files of each split (in particular the sharded version of uniref). You can also use `select_ECs.ipynb` to reproduce how we generated the EC numbers that are used for generation and analysis. 
 
 ## Training
-Example command for running training on 4 40GB A100s:
+Example command for running training:
 ```
 composer main.py --config config/long-final/ec-onehot-swissprot.yml --debug
 ```
-Results will be saved under `results/`. Training should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
+Results will be saved under `results/`. Training will use all availalbe GPUs with DDP. Training with 4 40GB A100s should take on the order of 6 hours for every 1 billion tokens. Other configs to reproduce the results from our study are given under `config/long-final/`
 
 ## Generation
 Some of the pretrained models are loaded to [Huggingface Hub](https://huggingface.co/jsunn-y/ProCALM), allowing for easy generation, with corresponding generated sequences preloaded to this respository. Alternatively, example commands to generate sequences with different conditioning:
