@@ -812,7 +812,7 @@ class ProgenConditional(ProGenPreTrainedModel): #nn.Module
         super().__init__(config)
 
         #self.model = ModularProGenForCausalLM.from_pretrained(pretrained_model_name_or_path=config.pretrained_model_dir, config=config)
-        self.model = ModularProGenForCausalLM.from_pretrained("jsunn-y/ProCALM", subfolder="progen2-base", config=config, cache_dir=config.pretrained_model_dir)
+        self.model = ModularProGenForCausalLM.from_pretrained("jsunn-y/ProCALM", subfolder=config.pretrained_model_name, config=config, cache_dir=config.pretrained_model_dir)
         self.model.requires_grad_(False) #freeze the pretrained model by default
 
         self.config = config

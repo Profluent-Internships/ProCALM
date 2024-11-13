@@ -13,12 +13,13 @@ logger = logging.getLogger(__name__)
 def get_config(model_config, data_config) -> dict:
     condition2encoding = {}
 
+    pretrained_model_dir = os.path.join('data/pretrained_models', model_config["pretrained_model"])
     kwargs = json.load(open(os.path.join(pretrained_model_dir, 'config.json')))
     kwargs["gradient_checkpointing"] = model_config.get("gradient_checkpointing", True)
 
     kwargs["full_finetuning"] = model_config.get("full_finetuning", False)
     kwargs["pretrained_model_name"] = model_config["pretrained_model"]
-    kwargs["pretrained_model_dir"] = os.path.join('data/pretrained_models', model_config["pretrained_model"])
+    kwargs["pretrained_model_dir"] = pretrained_model_dir
     kwargs["adapter_weight_init"] = model_config.get("adapter_weight_init", 1e-5)
     kwargs["adapter_nlayers"] = model_config.get("adapter_nlayers", 2)
     kwargs["adapter_dropout"] = model_config.get("adapter_dropout", 0.1)
@@ -51,8 +52,8 @@ def get_config(model_config, data_config) -> dict:
     
     return kwargs, condition2encoding
 
-def main():
-    get_parameters('data/pretrained_models', model_name="progen2-base")
+# def main():
+#     get_parameters('data/pretrained_models', model_name="progen2-base")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
