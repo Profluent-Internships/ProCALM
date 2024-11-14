@@ -1,9 +1,9 @@
 save_folder: results
 save_interval: 1000ba
-run_name: ec-onehot-swissprot-progen2large
+run_name: ec-onehot-swissprot-progen2small
 
 model:
-  pretrained_model: progen2-large
+  pretrained_model: progen2-small
   #below are all non-default parameters
   adapter_projection_nlayers: 2 #use MLP for projection
   adapter_nlayers: 4
@@ -12,7 +12,7 @@ data:
   shuffle: True
   prefetch_batch_size: 2000
   eval_tokens_per_batch: 12000 
-  train_tokens_per_batch: 48000
+  train_tokens_per_batch: 144000
   eval_interval: 500ba
   seed: 9176
   ec_encoding: data/ec2level4_onehot.pt
