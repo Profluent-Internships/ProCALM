@@ -1,4 +1,5 @@
 import os
+import glob
 import random
 from typing import List, Union
 from ruamel.yaml import YAML
@@ -34,7 +35,10 @@ class Runner():
         self.model_dir = os.path.join(CKPT_DIR, model_name)
         ckpt_file = os.path.join(self.model_dir, 'huggingface', checkpoint_name)
         
-        if os.path.exists(os.path.join(ckpt_file, "model.safetensors")):
+        safetensor_found = glob.glob(os.path.join(ckpt_file, "*.safetensors"))
+
+        #if os.path.exists(os.path.join(ckpt_file, "model.safetensors")):
+        if safetensor_found:
             #if there is a local safetensors file to load
             self.model = ProgenConditional.from_pretrained(ckpt_file)
             self.tokenizer = get_tokenizer()

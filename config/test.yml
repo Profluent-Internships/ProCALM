@@ -3,7 +3,7 @@ save_interval: 2ba
 run_name: test
 
 model:
-  pretrained_model: progen2-base
+  pretrained_model: progen2-large
   #below are all non-default parameters
   adapter_projection_nlayers: 2 #use MLP for projection
   adapter_nlayers: 4
