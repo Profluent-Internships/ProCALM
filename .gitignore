@@ -2,6 +2,7 @@
 data/pretrained_models/*
 data/raw_data/*
 data/ref_databases/*
+data/pretrained_ESMFold/*
 results/**
 wandb/*
 #!results/**/*.csv

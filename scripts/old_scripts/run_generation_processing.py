@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 import argparse
 import torch
+from ESMFold import ESMFold
 
 def clean(sample):
     """
@@ -108,7 +109,7 @@ def get_similarity(reference_ec, fingerprints):
     else:
         return torch.cosine_similarity(ec2drfp[reference_ec], fingerprints).max().item()
 
-def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-tax", split="train", low_bacteria_baseline=False):
+def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-tax", split="train", low_bacteria_baseline=False, plddt=False):
     """
     Script to tabulate statistics on the generated sequences.
     """
@@ -126,8 +127,8 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
 
     frac_terminated = n_seqs/n_generated
     results_df = run_bioinformatics(seqs_or_fasta=sequences, ref_db='data/ref_databases/swissprot')
-
     results_df.dropna(inplace=True)
+
     results_df['Entry'] = results_df['ref_entry_id'].apply(lambda x: x.split('|')[1])
     results_df = results_df[results_df['aln_coverage'] > 80]
     #in the future add a filter for the tantan regions with low complexity here
@@ -235,12 +236,23 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
         both_counts = None
         both_enrichment = None
 
+    #calculate the plddt of the correctly conditioned sequences
+    if plddt and n_both_correct > 0:
+        both_correct_seqs = both_correct_df['sequence'].values
+        plddts = []
+        esmfold = ESMFold()
+        for seq in both_correct_seqs:
+            plddts.append(esmfold.get_plddt(seq))
+        avg_plddt = np.mean(plddts)
+    else:
+        avg_plddt = None
+
     #calculate the clusters in the enzyme_df (used to be both_correct_df)
     avg_max_id = enzyme_df['max_id'].mean()/100 if n_enzymes > 0 else None 
     frac70_clusters = enzyme_df['cluster_70'].nunique()/n_enzymes if n_enzymes > 0 else None 
     frac90_clusters = enzyme_df['cluster_90'].nunique()/n_enzymes if n_enzymes > 0 else None 
 
-    summary_df.loc[len(summary_df.index)] = [model, checkpoint, ec, tax, split, n_generated, frac_terminated, frac_good, n_good, frac_enzymes, n_enzymes, average_accuracy_level, frac_ec_correct, n_ec_correct, ec_enrichment, frac_tax_mapped, frac_tax_correct, n_tax_correct, tax_enrichment, frac_both_correct, both_enrichment, avg_max_id, frac70_clusters, frac90_clusters, generated_ECs, both_counts]
+    summary_df.loc[len(summary_df.index)] = [model, checkpoint, ec, tax, split, n_generated, frac_terminated, frac_good, n_good, frac_enzymes, n_enzymes, average_accuracy_level, frac_ec_correct, n_ec_correct, ec_enrichment, frac_tax_mapped, frac_tax_correct, n_tax_correct, tax_enrichment, frac_both_correct, both_enrichment, avg_max_id, frac70_clusters, frac90_clusters, generated_ECs, both_counts, avg_plddt]
     return summary_df
 
 def parse_args():
@@ -256,7 +268,8 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    os.chdir('../')
+    # os.chdir('../../')
+    # print(os.getcwd())
 
     metadata = pd.read_csv("data/ref_databases/swissprot_enzyme.tsv", sep='\t')
     train_df = pd.read_csv('data/CARE_resampled50cluster_medium_withTax/train.csv')
@@ -330,7 +343,7 @@ if __name__ == '__main__':
 
         for checkpoint in checkpoints:
             for temp in temps:
-                summary_df = pd.DataFrame(columns=['model', 'checkpoint', 'ec', 'tax', 'split', 'n_generated', 'frac_terminated', 'frac_good', 'n_good', 'frac_enzymes', 'n_enzymes', 'average_accuracy_level', 'frac_ec_correct', 'n_ec_correct', 'ec_enrichment', 'frac_tax_mapped', 'frac_tax_correct', 'n_tax_correct', 'tax_enrichment', 'frac_both_correct', 'both_enrichment', 'avg_max_id',  'frac_70clusters', 'frac_90clusters', 'generated_ECs', "both_count"])
+                summary_df = pd.DataFrame(columns=['model', 'checkpoint', 'ec', 'tax', 'split', 'n_generated', 'frac_terminated', 'frac_good', 'n_good', 'frac_enzymes', 'n_enzymes', 'average_accuracy_level', 'frac_ec_correct', 'n_ec_correct', 'ec_enrichment', 'frac_tax_mapped', 'frac_tax_correct', 'n_tax_correct', 'tax_enrichment', 'frac_both_correct', 'both_enrichment', 'avg_max_id',  'frac_70clusters', 'frac_90clusters', 'generated_ECs', "both_count", "avg_plddt"])
 
                 for ec in ecs:
                     if ec in train_common_ecs:
@@ -344,7 +357,7 @@ if __name__ == '__main__':
                     
                     for tax in taxes:
                         pbar.set_postfix(ec=ec, tax=tax)
-                        summary_df = tabulate_results(summary_df, model, checkpoint, temp, ec=ec, tax=tax, split=split, low_bacteria_baseline=low_bacteria_basline)
+                        summary_df = tabulate_results(summary_df, model, checkpoint, temp, ec=ec, tax=tax, split=split, low_bacteria_baseline=low_bacteria_basline, plddt=args.plddt)
                         pbar.update(1)
 
                 all_ec_value_counts = all_df['EC number'].value_counts()
