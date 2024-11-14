@@ -39,7 +39,7 @@ CSV files summarizing the quality of generated sequences are preloaded to this r
 ```
 python scripts/run_generation_processing.py --model ec+tax-swissprot --checkpoint 9B --ec 4.2.1.20 --tax bacteria
 ```
-Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax).
+Results will be saved under `results/{model_name}/all_summary_{checkpoint}.csv`. Analysis will fun faster on more CPUs but should take on the order of seconds to one minute per combination of unique conditioning (EC/tax). Note that you need the metadata from `raw_data/swissprot_enzyme.tcsv` from [Huggingface](https://huggingface.co/jsunn-y/ProCALM) and a built BLAST reference database before this using `swissprot.fasta` and the relevant line of code from `scripts/database_setup.py`.
 
 Perplexities for different splits can be calculated with `perplexity_calculation.py` under `scripts` and outputs will be saved under `results/{model_name}/perplexity_{checkpoint}.csv`. Perplexity calculation requires a single A100 and should take on the order of minutes to one hour for all datasets on a single checkpoint.
 
