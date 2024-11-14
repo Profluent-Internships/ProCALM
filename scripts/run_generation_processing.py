@@ -280,7 +280,7 @@ if __name__ == '__main__':
         taxes = ['no-tax']
     else:
         assert args.tax in taxname2number.keys(), "Taxonomy must be one of bacteria, archaea, eukaryota, or viruses"
-        tax = taxname2number[args.tax] if tax is not None else None
+        tax = taxname2number[args.tax] if args.tax is not None else None
         taxes = [tax]
 
     pbar = tqdm(total=len(models) * len(checkpoints) * len(temps) * len(ecs) * len(taxes), desc='Processing')
@@ -293,14 +293,7 @@ if __name__ == '__main__':
                 summary_df = pd.DataFrame(columns=['model', 'checkpoint', 'ec', 'tax', 'split', 'n_generated', 'frac_terminated', 'frac_good', 'n_good', 'frac_enzymes', 'n_enzymes', 'average_accuracy_level', 'frac_ec_correct', 'n_ec_correct', 'ec_enrichment', 'frac_tax_mapped', 'frac_tax_correct', 'n_tax_correct', 'tax_enrichment', 'frac_both_correct', 'both_enrichment', 'avg_max_id',  'frac_70clusters', 'frac_90clusters', 'generated_ECs', "both_count"])
 
                 for ec in ecs:
-                    if ec in train_common_ecs:
-                        split = 'train_common'
-                    elif ec in train_rare_ecs:
-                        split = 'train_rare'
-                    elif ec in test_ecs:
-                        split = 'test'
-                    else:
-                        split = None
+                    split = None
                     
                     for tax in taxes:
                         pbar.set_postfix(ec=ec, tax=tax)
