@@ -28,6 +28,7 @@ dependencies:
       - pynvml
       - mosaicml[streaming] @ git+https://github.com/mosaicml/composer.git@dev
       - mosaicml-streaming
+      - wandb
       # Bio-Chem-related deps
       - biopython>=1.79
       - drfp

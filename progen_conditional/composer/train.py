@@ -13,7 +13,7 @@ import numpy as np
 import streaming
 import torch
 from composer.algorithms import GradientClipping
-from composer.loggers import FileLogger
+from composer.loggers import FileLogger, WandBLogger
 from composer.utils import dist, reproducibility
 from composer import Trainer
 
@@ -162,6 +162,12 @@ def get_trainer(
 
     evaluators = list(get_evaluators(config, condition2encoding, debug=debug))
 
+    wandb_logger = WandBLogger(
+    project="ProCALM",  # Replace with your W&B project name
+    #entity="your_wandb_entity",   # Optional: your W&B entity name
+    log_artifacts=True            # Set to True if you want to save artifacts
+)
+
     # Set up the actual trainer
     half = "bf16" if torch.cuda.is_bf16_supported() else "fp16"
     trainer = Trainer(
@@ -174,7 +180,7 @@ def get_trainer(
         spin_dataloaders=False,
         precision=f"amp_{half}",
         seed=train_config.get("seed", None),
-        loggers=[file_logger] if not disable_logging else None,
+        loggers=[wandb_logger, file_logger] if not disable_logging else None, #added the wandb logger
         callbacks=callbacks,
         # Optimization
         max_duration=max_duration,

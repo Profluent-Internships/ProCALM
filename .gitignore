@@ -2,6 +2,7 @@
 data/pretrained_models/*
 data/raw_data/*
 results/**
+wandb/*
 #!results/**/*.csv
 
 # results/*.pt
