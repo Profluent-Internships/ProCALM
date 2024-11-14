@@ -45,6 +45,6 @@ Perplexities for different splits can be calculated with `perplexity_calculation
 
 The output csvs can be visualized using `analysis/visualization.ipynb`.
 
-## Limitations
-Better logging for losses as training progresses could be implemented.
+## Logging
+Logging of various metrics is reported to [weights and biases](https://wandb.ai/site/). Be sure to login to your entity beforehand, and you can change the project name accordingly.
 
