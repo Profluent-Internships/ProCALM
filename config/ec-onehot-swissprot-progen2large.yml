@@ -1,5 +1,5 @@
 save_folder: results
-save_interval: 1000ba
+save_interval: 6000ba
 run_name: ec-onehot-swissprot-progen2large
 
 model:
@@ -13,7 +13,7 @@ data:
   prefetch_batch_size: 2000
   eval_tokens_per_batch: 12000 
   train_tokens_per_batch: 48000
-  eval_interval: 500ba
+  eval_interval: 3000ba
   seed: 9176
   ec_encoding: data/ec2level4_onehot.pt
   
