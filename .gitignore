@@ -1,6 +1,7 @@
 #addtl
 data/pretrained_models/*
 data/raw_data/*
+data/ref_databases/*
 results/**
 wandb/*
 #!results/**/*.csv
