@@ -249,6 +249,8 @@ def parse_args():
     parser.add_argument("--checkpoint", default="pretrained", type=str, help="Checkpoint name to load.")
     parser.add_argument("--ec", default=None, type=str, help="EC number to conditionally generate from. train+test specifies a list of curated ECs.")
     parser.add_argument("--tax", default=None, type=str, help="Taxonomy lineage IDS to conditionally generate from")
+    parser.add_argument("--plddt", action='store_true', help="Run plddt evluation on the generated sequences.")
+    parser.set_defaults(plddt=False)
     args = parser.parse_args()
     return args
 
