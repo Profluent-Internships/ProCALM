@@ -113,7 +113,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
     """
     Script to tabulate statistics on the generated sequences.
     """
-    if model == 'ZymCTRL':
+    if 'ZymCTRL' in model:
         file = 'results/{}/generated/sequences_pretrained_{}.fasta'.format(model, ec)
     else:
         file = 'results/{}/generated/{}/{}/sequences_{}_{}.fasta'.format(model, checkpoint, temp, ec, tax)
@@ -238,11 +238,14 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
 
     #calculate the plddt of the correctly conditioned sequences
     if plddt and n_both_correct > 0:
-        both_correct_seqs = both_correct_df['sequence'].values
+        #to speed things up, only take statistics on up to the first 100 sequences
+        both_correct_seqs = both_correct_df['sequence'].values[:100]
+        pbar2 = tqdm(total=len(both_correct_seqs), desc='Folding')
         plddts = []
         esmfold = ESMFold()
         for seq in both_correct_seqs:
             plddts.append(esmfold.get_plddt(seq))
+            pbar2.update(1)
         avg_plddt = np.mean(plddts)
     else:
         avg_plddt = None
@@ -253,6 +256,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
     frac90_clusters = enzyme_df['cluster_90'].nunique()/n_enzymes if n_enzymes > 0 else None 
 
     summary_df.loc[len(summary_df.index)] = [model, checkpoint, ec, tax, split, n_generated, frac_terminated, frac_good, n_good, frac_enzymes, n_enzymes, average_accuracy_level, frac_ec_correct, n_ec_correct, ec_enrichment, frac_tax_mapped, frac_tax_correct, n_tax_correct, tax_enrichment, frac_both_correct, both_enrichment, avg_max_id, frac70_clusters, frac90_clusters, generated_ECs, both_counts, avg_plddt]
+
     return summary_df
 
 def parse_args():
@@ -325,7 +329,7 @@ if __name__ == '__main__':
 
                 for ec in ecs:
                     for tax in taxes:
-                        if model == 'ZymCTRL':
+                        if 'ZymCTRL' in model:
                             file = 'results/{}/generated/sequences_pretrained_{}.fasta'.format(model, ec)
                             temp = 'temp1'
                         else:

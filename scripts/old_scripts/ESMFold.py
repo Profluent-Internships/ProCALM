@@ -16,12 +16,13 @@ class ESMFold():
         #use the tips from the tutorial to speed up calculation and reduces memory usage
         self.model.esm = self.model.esm.half()
         torch.backends.cuda.matmul.allow_tf32 = True
-        self.model.trunk.set_chunk_size(64)
+        #self.model.trunk.set_chunk_size(64)
 
     def get_plddt(self, protein):
         tokenized_input = self.tokenizer([protein], return_tensors="pt", add_special_tokens=False)['input_ids'].to(self.device)
         with torch.no_grad():
             output = self.model(tokenized_input)
+
             return torch.mean(output['plddt'].cpu()).item()
         
             # pdb = convert_outputs_to_pdb(output)

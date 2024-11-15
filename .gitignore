@@ -3,8 +3,11 @@ data/pretrained_models/*
 data/raw_data/*
 data/ref_databases/*
 data/pretrained_ESMFold/*
+data/sharded_datasets/swissprot-text/*
+data/text2encoding.pt
 results/**
 wandb/*
+data/useful_from_ProteinDT/*
 #!results/**/*.csv
 
 # results/*.pt
