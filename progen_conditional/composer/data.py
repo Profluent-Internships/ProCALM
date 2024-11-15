@@ -90,6 +90,7 @@ class StreamingDataset(streaming.StreamingDataset):
         ec_condition_key: str= "ec",
         tax_condition_key: str = "tax",
         stability_condition_key: str = "stability",
+        text_condition_key: str = "text",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -97,6 +98,7 @@ class StreamingDataset(streaming.StreamingDataset):
         self.ec_condition_key = ec_condition_key
         self.tax_condition_key = tax_condition_key
         self.stability_condition_key = stability_condition_key
+        self.text_condition_key = text_condition_key
 
     def __getitem__(self, at) -> Union[str, Tuple[str, Dict[str, Any]]]:
         ret = super().__getitem__(at)
@@ -104,7 +106,8 @@ class StreamingDataset(streaming.StreamingDataset):
         ec = ret.get(self.ec_condition_key, None)
         tax = ret.get(self.tax_condition_key, None)
         stability = ret.get(self.stability_condition_key, None)
-        return (sequence, ec, tax, stability)
+        text = ret.get(self.text_condition_key, None)
+        return (sequence, ec, tax, stability, text)
 
 class StreamingDataLoader(streaming.StreamingDataLoader):
     def __init__(

@@ -22,7 +22,7 @@ data:
 
 train:
   seed: 42
-  max_duration: 9e9 #this should be in units of tokens (epochs won't work)
+  max_duration: 3e9 #this should be in units of tokens (epochs won't work)
   lr: 5e-4 
   weight_decay: 5e-06
   warmup_steps: 500 #batches

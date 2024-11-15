@@ -165,7 +165,7 @@ def get_trainer(
     wandb_logger = WandBLogger(
     project="ProCALM",  # Replace with your W&B project name
     #entity="your_wandb_entity",   # Optional: your W&B entity name
-    log_artifacts=True            # Set to True if you want to save artifacts
+    log_artifacts=False            # Set to True if you want to save artifacts
 )
 
     # Set up the actual trainer
