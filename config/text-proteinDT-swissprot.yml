@@ -15,7 +15,7 @@ data:
   train_tokens_per_batch: 144000
   eval_interval: 500ba
   seed: 9176
-  text_encoding: 
+  text_encoding: data/text2encoding.pt
   
   train_sources:
   - local: data/sharded_datasets/swissprot-text/train

@@ -44,11 +44,13 @@ def prepare_batch(
     ECs = []
     taxes = []
     stablities = []
-    for seq, ec, tax, stablity in batch:
+    texts = []
+    for seq, ec, tax, stablity, text in batch:
         seqs.append(seq)
         ECs.append(ec)
         taxes.append(tax)
         stablities.append(stablity)
+        texts.append(text)
 
     processed_seqs: List[str] = []
     reverse_booleans = rng.random(len(seqs)) < 0.5
@@ -67,6 +69,9 @@ def prepare_batch(
     if 'tax' in condition2encoding:
         tax2encoding = condition2encoding['tax']
         tax_encodings = [tax2encoding[tax_id] for tax_id in taxes]
+    if 'text' in condition2encoding:
+        text2encoding = condition2encoding['text']
+        text_encodings = [text2encoding[text] for text in texts]
 
     # If we want a specific number of tokens per sub-batch, sort the sequences by length, and
     # combine them into sub-batches that have the appropriate number of total tokens (including padding)
@@ -109,6 +114,11 @@ def prepare_batch(
             tax_encodings_selected = torch.stack(tax_encodings_selected)
             tax_encodings_selected = tax_encodings_selected.repeat(max_length, 1, 1)
             tax_encodings_selected = torch.transpose(tax_encodings_selected, 0, 1)
+        if 'text' in condition2encoding:
+            text_encodings_selected = [text_encodings[i] for i in idxs]
+            text_encodings_selected = torch.stack(text_encodings_selected)
+            text_encodings_selected = text_encodings_selected.repeat(max_length, 1, 1)
+            text_encodings_selected = torch.transpose(text_encodings_selected, 0, 1)
 
         batch = dict(
             input_ids=torch.tensor(input_ids, device=device),
@@ -122,6 +132,8 @@ def prepare_batch(
             adapter_input['ec'] = EC_encodings_selected.to(device)
         if 'tax' in condition2encoding:
             adapter_input['tax'] = tax_encodings_selected.to(device)
+        if 'text' in condition2encoding:
+            adapter_input['text'] = text_encodings_selected.to(device)
         batch['adapter_input'] = adapter_input
 
         batches.append(batch)

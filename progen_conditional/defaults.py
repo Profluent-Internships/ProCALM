@@ -40,7 +40,7 @@ def get_config(model_config, data_config) -> dict:
     kwargs["encoding_files"] = {}
     kwargs["encoding_dimensions"] = {}
 
-    for condition_name in ["ec", "tax", "stability"]:
+    for condition_name in ["ec", "tax", "stability", "text"]:
         encoding_file = data_config.get(f"{condition_name}_encoding", None)
         if encoding_file is not None:
             kwargs["encoding_files"][condition_name] = encoding_file
