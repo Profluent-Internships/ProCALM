@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=1 python runner.py --model ec-onehot-swissprot-progen2large --checkpoint ba32964 --temp 0.3 --ec train+test --num_seqs 900
