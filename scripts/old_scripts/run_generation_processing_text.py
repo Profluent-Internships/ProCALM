@@ -48,7 +48,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
         lines_start = int(prompt_name.split('_')[1])*225*2
         lines_end = lines_start + 225*2
 
-        with open(f'results/ProteinDT_{split_name}_sequences.txt', 'r') as f:
+        with open(f'results/ProteinDT/generated/{split_name}_sequences.txt', 'r') as f:
             lines = f.readlines()[lines_start:lines_end]
             #read every other line
             sequences = [l for l in lines[1::2]]
@@ -68,7 +68,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     results_df = run_bioinformatics(seqs_or_fasta=sequences, ref_db='data/ref_databases/swissprot_ProteinDT')
     results_df.dropna(inplace=True)
 
-    results_df['Entry'] = results_df['ref_entry_id'].apply(lambda x: x.split('|')[1])
+    results_df['index'] = results_df['ref_entry_id'].str.split('_').str[1] #remove seq_ from the ront of the name
     results_df = results_df[results_df['aln_coverage'] > 80]
     #in the future add a filter for the tantan regions with low complexity here
     
@@ -76,7 +76,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     frac_good = n_good/n_generated
 
     #filter to only enzyme hits
-    results_df = results_df.merge(metadata, on='Entry', how='left')
+    results_df = results_df.merge(metadata[['index', 'Text']], on='index', how='left')
     #results_df = results_df.dropna().reset_index()
     #n_enzymes = len(results_df)
 
@@ -105,7 +105,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     frac90_clusters = results_df['cluster_90'].nunique()/n_good if n_good > 0 else None 
 
     summary_df.loc[len(summary_df.index)] = [model, checkpoint, prompt_name, split_name, n_generated, frac_terminated, frac_good, n_good, frac_correct, n_correct, avg_max_id, frac70_clusters, frac90_clusters, avg_plddt]
-
+    
     return summary_df
 
 def parse_args():
@@ -123,14 +123,14 @@ if __name__ == '__main__':
     # os.chdir('../../')
     # print(os.getcwd())
 
-    metadata = pd.read_csv("data/ref_databases/swissprot_ProteinDT.tsv", sep='\t')
-    all_df = pd.read_csv('data/swissprot-text/train.csv')
+    metadata = pd.read_csv("data/ref_databases/swissprot_proteinDT_text.csv")
+    metadata['index'] = metadata.index.values.astype(str)
 
     train_dist = {}
     
-    with open('data/useful_from_ProteinDT/common/text_sequences.txt', 'r') as f:
+    with open('data/useful_from_ProteinDT/common/text_sequence.txt', 'r') as f:
         train_common_text_prompts = f.read().splitlines()
-    with open('data/useful_from_ProteinDT/rare/text_sequences.txt', 'r') as f:
+    with open('data/useful_from_ProteinDT/rare/text_sequence.txt', 'r') as f:
         train_rare_text_prompts = f.read().splitlines()
 
 
@@ -138,33 +138,33 @@ if __name__ == '__main__':
     checkpoints = [args.checkpoint] 
     temps = ["temp0.3"]
 
-    if args.prompts == 'train+test':
+    if args.text == 'all_prompts':
         prompts = train_common_text_prompts + train_rare_text_prompts
 
     #check to make sure all files exist before proceedding
-    flag = False
-    for model in models:
-        for checkpoint in checkpoints:
-            for temp in temps:
+    # flag = False
+    # for model in models:
+    #     for checkpoint in checkpoints:
+    #         for temp in temps:
 
-                for split, prompts in zip(['common', 'rare'], [train_common_text_prompts, train_rare_text_prompts]):
-                    for i, prompt in enumerate(prompts):
+    #             for split, prompts in zip(['common', 'rare'], [train_common_text_prompts, train_rare_text_prompts]):
+    #                 for i, prompt in enumerate(prompts):
 
-                        prompt_name = split + '_' + str(i)
-                        file = 'results/{}/generated/{}/{}/sequences_{}.fasta'.format(model, checkpoint, temp, prompt_name)
+    #                     prompt_name = split + '_' + str(i)
+    #                     file = 'results/{}/generated/{}/{}/sequences_{}.fasta'.format(model, checkpoint, temp, prompt_name)
                         
-                        if not os.path.exists(file):
-                            print(file + " does not exist")
-                            flag = True
-    if flag:
-        exit()
+    #                     if not os.path.exists(file):
+    #                         print(file + " does not exist")
+    #                         flag = True
+    # if flag:
+    #     exit()
 
     pbar = tqdm(total=len(models) * len(checkpoints) * len(temps) * len(prompts), desc='Processing')
 
     for model in models:
         for checkpoint in checkpoints:
             for temp in temps:
-                summary_df = pd.DataFrame(columns=['model', 'checkpoint', 'ec', 'tax', 'split', 'n_generated', 'frac_terminated', 'frac_good', 'n_good', 'frac_correct', 'n_correct', 'avg_max_id',  'frac_70clusters', 'frac_90clusters', "avg_plddt"])
+                summary_df = pd.DataFrame(columns=['model', 'checkpoint', 'prompt_name', 'split', 'n_generated', 'frac_terminated', 'frac_good', 'n_good', 'frac_correct', 'n_correct', 'avg_max_id',  'frac_70clusters', 'frac_90clusters', "avg_plddt"])
                 
                 for split, prompts in zip(['common', 'rare'], [train_common_text_prompts, train_rare_text_prompts]):
                     for i, prompt in enumerate(prompts):
