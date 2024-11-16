@@ -12,7 +12,7 @@ import torch
 from tqdm import tqdm
 
 from transformers import GenerationConfig
-from progen_conditional.model import ProgenConditional #ProGenForCausalLM,
+from progen_conditional.model import ProGenForCausalLM, ProgenConditional
 from progen_conditional.data import get_tokenizer, PAD_TOKEN_ID
 
 CKPT_DIR = "results/"
