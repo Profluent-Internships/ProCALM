@@ -88,7 +88,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     #calculate the plddt of the correctly conditioned sequences
     if plddt and n_correct > 0:
         #to speed things up, only take statistics on up to the first 100 sequences
-        both_correct_seqs = both_df['sequence'].values[:100]
+        both_correct_seqs = results_df['sequence'].values[:100]
         pbar2 = tqdm(total=len(both_correct_seqs), desc='Folding')
         plddts = []
         esmfold = ESMFold()
@@ -104,7 +104,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     frac70_clusters = results_df['cluster_70'].nunique()/n_good if n_good > 0 else None 
     frac90_clusters = results_df['cluster_90'].nunique()/n_good if n_good > 0 else None 
 
-    summary_df.loc[len(summary_df.index)] = [model, checkpoint, prompt_name, split, n_generated, frac_terminated, frac_good, n_good, frac_correct, n_correct, avg_max_id, frac70_clusters, frac90_clusters, avg_plddt]
+    summary_df.loc[len(summary_df.index)] = [model, checkpoint, prompt_name, split_name, n_generated, frac_terminated, frac_good, n_good, frac_correct, n_correct, avg_max_id, frac70_clusters, frac90_clusters, avg_plddt]
 
     return summary_df
 
