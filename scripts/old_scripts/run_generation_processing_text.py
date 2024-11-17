@@ -48,7 +48,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
         lines_start = int(prompt_name.split('_')[1])*225*2
         lines_end = lines_start + 225*2
 
-        with open(f'results/ProteinDT/generated/{split_name}_sequences.txt', 'r') as f:
+        with open(f'results/ProteinDT/generated/step02_inference_{split_name}.txt', 'r') as f:
             lines = f.readlines()[lines_start:lines_end]
             #read every other line
             sequences = [l for l in lines[1::2]]
@@ -105,7 +105,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     frac90_clusters = results_df['cluster_90'].nunique()/n_good if n_good > 0 else None 
 
     summary_df.loc[len(summary_df.index)] = [model, checkpoint, prompt_name, split_name, n_generated, frac_terminated, frac_good, n_good, frac_correct, n_correct, avg_max_id, frac70_clusters, frac90_clusters, avg_plddt]
-    
+
     return summary_df
 
 def parse_args():

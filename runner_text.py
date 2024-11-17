@@ -84,14 +84,15 @@ class Runner():
 
         #check if the conditions are in the encoding dicts used to train the model. If not, do unconditional generation for that condition.
         
-        print(f"Generating sequences for prompt ")
+        print(f"Generating sequences for prompt {self.name}: {conditions['text']}")
 
         condition_encodings = {}
         for key, encoding_dict in self.encoding_dicts.items():
             condition = conditions.get(key, None)
 
             if condition is not None:
-                condition_encodings[key] = encoding_dict[condition].to(self.device)
+                #convert dtype of float32
+                condition_encodings[key] = encoding_dict[condition].to(torch.float32).to(self.device)
             else:
                 condition_encodings[key] = torch.zeros(1, self.progenconditional_config.encoding_dimensions[key]).to(self.device)
                 
@@ -138,9 +139,9 @@ def main():
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
-    with open('data/useful_from_ProteinDT/common/text_sequences.txt', 'r') as f:
+    with open('data/useful_from_ProteinDT/common/text_sequence.txt', 'r') as f:
         train_common_text_prompts = f.read().splitlines()
-    with open('data/useful_from_ProteinDT/rare/text_sequences.txt', 'r') as f:
+    with open('data/useful_from_ProteinDT/rare/text_sequence.txt', 'r') as f:
         train_rare_text_prompts = f.read().splitlines()
 
     all_prompts = train_common_text_prompts + train_rare_text_prompts
