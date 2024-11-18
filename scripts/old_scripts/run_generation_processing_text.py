@@ -43,17 +43,19 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     """
     split_name = prompt_name.split('_')[0]
 
-    if 'ProteinDT' in model:
+    if model == 'ProteinDT':
         #for now hardcode it to 225 generated sequences
         lines_start = int(prompt_name.split('_')[1])*225*2
         lines_end = lines_start + 225*2
 
-        with open(f'results/ProteinDT/generated/step02_inference_{split_name}.txt', 'r') as f:
+        with open(f'results/ProteinDT/generated/step_02_inference_{split_name}.txt', 'r') as f:
             lines = f.readlines()[lines_start:lines_end]
             #read every other line
-            sequences = [l for l in lines[1::2]]
+            sequences = [l.strip()for l in lines[1::2]]
             n_generated = len(sequences)
             n_seqs = len(sequences)
+            # print(sequences)
+            # print(n_seqs)
     else:
         file = 'results/{}/generated/{}/{}/sequences_{}.fasta'.format(model, checkpoint, temp, prompt_name)
         
@@ -85,10 +87,11 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     n_correct = results_df['corect'].sum()
     frac_correct = n_correct/n_good
 
+    correct_df = results_df[results_df['corect'] == True]
     #calculate the plddt of the correctly conditioned sequences
     if plddt and n_correct > 0:
         #to speed things up, only take statistics on up to the first 100 sequences
-        both_correct_seqs = results_df['sequence'].values[:100]
+        both_correct_seqs = correct_df['sequence'].values[:100]
         pbar2 = tqdm(total=len(both_correct_seqs), desc='Folding')
         plddts = []
         esmfold = ESMFold()
@@ -99,7 +102,7 @@ def tabulate_results(summary_df, model, checkpoint, temp, prompt_name, prompt, p
     else:
         avg_plddt = None
 
-    #calculate the clusters in the enzyme_df (used to be both_correct_df)
+    #calculate the clusters in the valid proteins df (used to be both_correct_df)
     avg_max_id = results_df['max_id'].mean()/100 if n_good > 0 else None 
     frac70_clusters = results_df['cluster_70'].nunique()/n_good if n_good > 0 else None 
     frac90_clusters = results_df['cluster_90'].nunique()/n_good if n_good > 0 else None 
@@ -136,7 +139,7 @@ if __name__ == '__main__':
 
     models = [args.model]
     checkpoints = [args.checkpoint] 
-    temps = ["temp0.3"]
+    temps = ["temp0.5"] #for text we are typically evaluating the higher temp
 
     if args.text == 'all_prompts':
         prompts = train_common_text_prompts + train_rare_text_prompts

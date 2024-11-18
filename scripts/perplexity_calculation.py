@@ -27,7 +27,7 @@ for model_name, checkpoint in zip(['ec-onehot-swissprot'],['ba21000']):
         tokenizer = get_tokenizer()
     else:
         #download the model from the huggingface model hub and cache it locally
-        model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint_name), cache_dir=ckpt_file)
+        model = ProgenConditional.from_pretrained("jsunn-y/ProCALM", subfolder="{}/{}".format(model_name, checkpoint), cache_dir=ckpt_file)
         tokenizer = Tokenizer.from_pretrained("jsunn-y/ProCALM")
 
     model.to(device)

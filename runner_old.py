@@ -132,7 +132,7 @@ def parse_args():
     parser.add_argument("--temp", default=0.3, type=float, help="Temperature for generation")
     parser.add_argument("--top_p", default=0.95, type=float, help="Top p for generation")
     parser.add_argument("--batch_size", default=45, type=int, help="Batch size for generation.")
-    parser.add_argument("--num_seqs", default=990, type=int, help="Number of sequences to generate")
+    parser.add_argument("--num_seqs", default=900, type=int, help="Number of sequences to generate")
     args = parser.parse_args()
     return args
 

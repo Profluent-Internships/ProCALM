@@ -1,4 +1,4 @@
-from progen_conditional.model import ProgenConditional, ProGenForCausalLM
+from progen_conditional.model import ProgenConditional #, ProGenForCausalLM
 from progen_conditional.data.tokenizer import get_tokenizer
 from progen_conditional.composer.data import StreamingDataset, StreamingDataLoader, TokenDataSpec
 from composer.utils import dist
@@ -15,12 +15,12 @@ import os
 import json
 
 device = 'cuda'
-os.chdir('../')
+#os.chdir('../')
 
 # model_name = 'ec-onehot-swissprot_20240819-231400'
 #'ec-onehot-uniref_20240820-021701', 'ec-creep-swissprot_20240820-004559', 'ec-drfp-swissprot_20240820-004555',
 
-for model_name, checkpoint in zip(['ec-onehot-swissprot_20240819-231400'],['ba63000']): 
+for model_name, checkpoint in zip(['ec-onehot-swissprot-progen2large', 'ec-onehot-swissprot-progen2xlarge'],['ba32964', 'ba64974']): 
     #['progen2-base'], ['pretrained']
     #['ec+tax-swissprot-lowbacteria_20240824-202511', 'ec+tax-swissprot-shared-lowbacteria_20240824-202720'], ['ba11000', 'ba11000']
     #['ec-onehot-swissprot-small_20240822-232820', 'ec-onehot-swissprot-summed_20240822-232823', 'ec+tax-swissprot_20240819-231401', 'ec+tax-swissprot-shared_20240822-232820'], ['ba11000', 'ba11000', 'ba21000', 'ba21000']
@@ -65,7 +65,7 @@ for model_name, checkpoint in zip(['ec-onehot-swissprot_20240819-231400'],['ba63
     df = pd.DataFrame(columns=['sequence', 'perplexity', 'split'])
 
     #total_tokens = 70e6
-    tokens_per_batch = 24000
+    tokens_per_batch = 12000
     #batches = round(total_tokens / tokens_per_batch)
     tqdm_iter = tqdm(range(len(sources)), desc="Calculating perplexity")
 
