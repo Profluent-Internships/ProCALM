@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     models = [args.model]
     checkpoints = [args.checkpoint] 
-    temps = ["temp0.5"] #for text we are typically evaluating the higher temp
+    temps = ["temp1.0"] #for text we are typically evaluating the higher temp
 
     if args.text == 'all_prompts':
         prompts = train_common_text_prompts + train_rare_text_prompts
