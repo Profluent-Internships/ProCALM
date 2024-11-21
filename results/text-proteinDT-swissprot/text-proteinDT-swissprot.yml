@@ -1,0 +1,26 @@
+save_folder: results
+save_interval: 1000ba
+run_name: text-proteinDT-swissprot
+model:
+  pretrained_model: progen2-base
+  adapter_projection_nlayers: 2
+  adapter_nlayers: 4
+  adapter_c_s: 256
+data:
+  shuffle: true
+  prefetch_batch_size: 2000
+  eval_tokens_per_batch: 12000
+  train_tokens_per_batch: 144000
+  eval_interval: 500ba
+  seed: 9176
+  text_encoding: data/text2encoding.pt
+  train_sources:
+  - local: data/sharded_datasets/swissprot-text/train
+train:
+  seed: 42
+  max_duration: 3000000000.0
+  lr: 0.0005
+  weight_decay: 5e-06
+  warmup_steps: 500
+  total_lr_decay_factor: 0.1
+  gradient_clipping_threshold: 0.8
