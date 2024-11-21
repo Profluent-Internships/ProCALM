@@ -27,6 +27,9 @@ python run_generation_processing.py --model ZymCTRL --ec train+test
 #our model
 python run_generation_processing.py --model ec-onehot-swissprot_20240819-231400 --checkpoint ba21000 --ec train+test
 
+#example with plddt and structure saving
+python scripts/old_scripts/run_generation_processing.py --model ec-onehot-swissprot --checkpoint ba11000 --ec common --plddt
+
 #taxonomy conditioning
 python run_generation_processing.py --model tax-swissprot_20240820-004651 --checkpoint ba63000 --tax superkingdoms
 
