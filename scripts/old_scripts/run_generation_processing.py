@@ -243,8 +243,14 @@ def tabulate_results(summary_df, model, checkpoint, temp, ec="no-ec", tax="no-ta
         pbar2 = tqdm(total=len(both_correct_seqs), desc='Folding')
         plddts = []
         esmfold = ESMFold()
-        for seq in both_correct_seqs:
-            plddts.append(esmfold.get_plddt(seq))
+
+        for i, seq in enumerate(both_correct_seqs):
+            #comment out these lines if you would not like to save the predicted pdb structures
+            file_name = f"results/{model}/generated/{checkpoint}/{temp}/{ec}/{i}"
+            os.makedirs(f"results/{model}/generated/{checkpoint}/{temp}/{ec}", exist_ok=True)
+            #file_name = None
+
+            plddts.append(esmfold.get_plddt(seq, save_pdb_path=file_name))
             pbar2.update(1)
         avg_plddt = np.mean(plddts)
     else:
@@ -324,7 +330,7 @@ if __name__ == '__main__':
     for model in models:
         for checkpoint in checkpoints:
             for temp in temps:
-                if model == 'ZymCTRL':
+                if model == 'ZymCTRL' and args.ec == 'train+test':
                     ecs = train_common_ecs + train_rare_ecs
 
                 for ec in ecs:
@@ -384,8 +390,11 @@ if __name__ == '__main__':
                     summary_df['similarity_to_train'] = summary_df['ec'].apply(get_similarity, args=(fingerprints,))
 
                 #load the summary_df if it already exists and append new results
-                if os.path.exists(f'results/{model}/all_summary_{checkpoint}_{temp}.csv'):
-                    old_summary_df = pd.read_csv(f'results/{model}/all_summary_{checkpoint}_{temp}.csv')
-                    summary_df = pd.concat([old_summary_df, summary_df], axis=0)
+                # if os.path.exists(f'results/{model}/all_summary_{checkpoint}_{temp}.csv'):
+                #     old_summary_df = pd.read_csv(f'results/{model}/all_summary_{checkpoint}_{temp}.csv')
+                #     summary_df = pd.concat([old_summary_df, summary_df], axis=0)
 
-                summary_df.to_csv('results/{}/all_summary_{}_{}.csv'.format(model, checkpoint, temp), index=False)
+                if args.plddt:
+                    summary_df.to_csv('results/{}/all_summary_{}_{}_plddt.csv'.format(model, checkpoint, temp), index=False)
+                else:
+                    summary_df.to_csv('results/{}/all_summary_{}_{}.csv'.format(model, checkpoint, temp), index=False)

@@ -18,16 +18,17 @@ class ESMFold():
         torch.backends.cuda.matmul.allow_tf32 = True
         #self.model.trunk.set_chunk_size(64)
 
-    def get_plddt(self, protein):
+    def get_plddt(self, protein, save_pdb_path=None):
         tokenized_input = self.tokenizer([protein], return_tensors="pt", add_special_tokens=False)['input_ids'].to(self.device)
         with torch.no_grad():
             output = self.model(tokenized_input)
 
+            if save_pdb_path is not None:
+                pdb = self.convert_outputs_to_pdb(output)
+                with open(f"{save_pdb_path}.pdb", "w") as f:
+                    f.write("".join(pdb))
+
             return torch.mean(output['plddt'].cpu()).item()
-        
-            # pdb = convert_outputs_to_pdb(output)
-            # with open(f"structures/{ec}/{name}.pdb", "w") as f:
-            #     f.write("".join(pdb))
 
     @staticmethod
     def convert_outputs_to_pdb(outputs):
