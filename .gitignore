@@ -1,4 +1,5 @@
 #addtl
+tmp/
 data/pretrained_models/*
 data/raw_data/*
 data/ref_databases/*
